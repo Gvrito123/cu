@@ -1,0 +1,40 @@
+* {
+    margin:0;
+    padding: 0;
+    font-family: 'Unica One', cursive;
+}
+body {
+    background-color: rgb(167, 166, 166);
+}
+.container {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 2.4%;
+    height: 90vh;
+    border: 1px solid gray;
+    text-align: center;
+    background-color:#eeeeee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.header {
+    text-align: center;
+}
+#city {
+    font-weight: bold;
+    font-size: 20px;
+}
+.sunny {
+    display: none;
+}
+.cloudy {
+    display: none;
+}
+.sunny.active {
+    display: flex;
+}
+.cloudy.active {
+    display: flex;
+}
