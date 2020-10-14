@@ -38,3 +38,12 @@ body {
 .cloudy.active {
   display: flex;
 }
+#temperature-label {
+  display: none;
+}
+#feels-like-label {
+  display: none;
+}
+#error {
+  display: none;
+}

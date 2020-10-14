@@ -6,17 +6,46 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Unica+One:400%7CMontserrat:400&amp;subset=latin">
-    
+
 </head>
 <body>
+    
     <div class="container">
-    <div class="header"><span id="city"></span></div><br>
-    <span id="weathertype"></span><br>
-    <img src="sunny.png" class="sunny">
-    <img src="cloudy.png" class="cloudy"><br>
-    <span>Temperature:</span><span id="temperature"></span><br>
-    <span>Feels Like:</span><span id="feelslike"></span>
-    <div class="data"></div>
+        <div class="choosing-city">
+            <input type="text" id='input-city'>
+            <button class='search-btn'>Get Weather</button>
+        </div>
+        <br>
+        
+        <div id="main">
+            <div class="header">
+                <span id="city"></span>
+            </div>
+            
+            <br>
+
+            <span id="weathertype"></span>
+
+            <br>
+
+            <img src="sunny.png" class="sunny">
+
+            <img src="cloudy.png" class="cloudy">
+
+            <br>
+            
+            <span  id='temperature-label'>Temperature:</span>
+            <span id="temperature">
+
+            </span>
+            <br>
+            <span id='feels-like-label'>Feels Like:</span>
+            <span id="feelslike">
+
+            </span>
+            <div class="data"></div>
+        </div>
+        <h1 id='error'>Incorrect city name!</h1>
     </div>
 </body>
 <script src="script.js" type="text/javascript"></script>
