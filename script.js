@@ -4,7 +4,7 @@ const sunnyweatherimage = document.getElementsByClassName("sunny")[0];
 
 const cloudyweatherimage = document.getElementsByClassName("cloudy")[0];
 
-const searchButton = document.getElementsByClassName('search-btn')[0]
+const searchButton = document.getElementsByClassName('search-btn')[0];
 
 function getCityFromInput(){
     return document.getElementById('input-city').value;
