@@ -1,57 +1,134 @@
-const API = '64929040b1f2c19079d8a59d206b7759';
+class CRUD {
+    db = new Map();
+    lastId = 0;
+    constructor(){
 
-const sunnyweatherimage = document.getElementsByClassName("sunny")[0];
-
-const cloudyweatherimage = document.getElementsByClassName("cloudy")[0];
-
-const searchButton = document.getElementsByClassName('search-btn')[0];
-
-function getCityFromInput(){
-    return document.getElementById('input-city').value;
-}
-
-searchButton.addEventListener("click",function(){
-    displayWeather(getCityFromInput());
-
-});
-
-function displayWeather(qalaqi){
-    let city = qalaqi;
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API}&units=metric`)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)   
-            if (data.main === undefined){
-                document.getElementById('main').style.display='none';
-                document.getElementById('error').style.display='block';
-                console.log(data.temp)
-                
-            }
-            else {
-                document.getElementById('main').style.display='block';
-                document.getElementById('error').style.display='none';
-                document.getElementById("temperature-label").style.display = "flex";
-                document.getElementById("feels-like-label").style.display = "flex";
-                var temperature = data.temp;
-                document.getElementById("city").innerHTML = city;
-                document.getElementById("temperature").innerHTML = data.main.temp;
-                document.getElementById("feelslike").innerHTML = data.main.feels_like;
-                document.getElementById("weathertype").innerHTML = data.weather[0].main;
-                if (data.weather[0].main == "Clear") {
-                    sunnyweatherimage.classList.add("active");
-                    cloudyweatherimage.classList.remove("active");
-                    
-                }
-                else {
-                    cloudyweatherimage.classList.add("active");
-                    sunnyweatherimage.classList.remove('active');
-                }
-            }
-            
+    }
+    add(source){
+        const sampleObject = {
+            content: '',
+            id: 0
+        }
+        sampleObject.id = this.lastId;
+        sampleObject.content = source;
+        this.db.set(sampleObject.id,sampleObject);
+        this.lastId++;
+        return sampleObject.id;
+    }
+    read(id){
+        if(!this.db.has(id)) return null;
+        return this.db.get(id);
+    }
+    delete(id){
+        if(!this.db.has(id)) return null;
+        return this.db.delete(id);
+    }
+    readAll(){
+        let tempArr = [];
+        this.db.forEach((value)=> {
+            tempArr.push(value)
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    
+        return tempArr;
+    }
+    update(id,updatedContent){
+        if(!this.db.has(id)) return null;
+        let object = this.db.get(id);
+        object.content = updatedContent;
+        return this.db.set(id,object);
+    }
+    randomColor(){
+        const colors = [
+            '#ff6e40',
+            '#ffea00',
+            '#00e676',
+            '#9e9d24',
+            '#8bc34a',
+            '#f4ff81',
+            '#00b0ff',
+            '#0091ea',
+            '#00bfa5',
+            '#3d5afe',
+            '#2196f3',
+            '#ff1744',
+            '#e040fb',
+            '#ef9a9a',
+        ]
+        const number = Math.floor(Math.random()*colors.length);
+        return colors[number];
+    }
+    addCard(target,text) {
+        let cards = this.readAll();
+        target.innerHTML = null;
+        for(let key in cards){
+            const template = `
+                <div class="todo-card" id="card${cards[key].id}">
+                    <div class="todo-card-content">
+                        <span class="todo-card-content-text" id="todo-text-${cards[key].id}">${cards[key].content}</span>
+                        <input type="text" id="edit-${cards[key].id}" class="card-edit">
+                    </div>
+                    <div class="todo-card-buttons">
+                        <button class ="edit-button button" id="edit${cards[key].id}">Edit</button>
+                        <button class="delete-button button" id="delete${cards[key].id}">x</button>
+                    </div>
+                </div>
+            `;
+            target.innerHTML += template;
+            let card = document.getElementById(`card${cards[key].id}`);
+            card.style.backgroundColor = `${this.randomColor()}`;
+        }
+        const editBtns = target.getElementsByClassName('edit-button')
+        const delBtns = target.getElementsByClassName('delete-button')
+        function isnumber(str) {
+            if(str.match(/(\d+)/)){
+                return str.match(/(\d+)/)[0]
+            }
+        }
+        for(let i = 0; i < editBtns.length; i++) {
+            editBtns[i].addEventListener('click', () => {
+                let id = isnumber(editBtns[i].id);
+                let span = document.getElementById(`todo-text-${i}`)
+                let editField = document.getElementById(`edit-${i}`);
+                span.style.display = 'none';
+                editField.style.display = 'inline'
+                editField.value = span.innerHTML;
+                editField.onkeydown = (key) => {
+                    if(key.keyCode == 13){
+                        this.update(i, editField.value);
+                        span.style.display = 'inline';
+                        span.innerHTML = editField.value;
+                        editField.style.display = 'none';
+                    }
+                }
+            })
+        }
+        for(let i = 0; i < delBtns.length; i++) {
+            delBtns[i].addEventListener('click', () => {
+                let id = isnumber(delBtns[i].id);
+                const card = document.getElementById(`card${id}`);
+                this.delete(id*1);
+                card.style.display = 'none';
+            })
+        }
+    }
 }
-
+const input = document.getElementById('field');
+const addBtn = document.getElementById('submit');
+const todoList = document.getElementById('list');
+const editBtns = document.getElementsByClassName('edit-button');
+const delBtns = document.getElementsByClassName('delete-button');
+let crud;
+window.addEventListener('DOMContentLoaded',()=> {
+    crud = new CRUD();
+})
+addBtn.addEventListener('click',() => {
+    let value = input.value;
+    let id = crud.add(value);
+    let cards = crud.readAll();
+    crud.addCard(todoList,value);
+})
+input.onkeydown = (key) => {
+    if(key.keyCode == 13){
+        addBtn.click();
+        input.value = null;
+    }
+}
